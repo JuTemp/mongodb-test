@@ -3,20 +3,30 @@ package Api
 import (
 	"net/http"
 
-	logical "github.com/JuTemp/mongodb-test/Logical"
+	Logical "github.com/JuTemp/mongodb-test/Logical"
+	MyGinContext "github.com/JuTemp/mongodb-test/util/myGinContext"
 	"github.com/gin-gonic/gin"
 )
 
-func Search(c *gin.Context) {
+func Search(c MyGinContext.MyGinContext) {
 	username := c.PostForm("username")
 	if username == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Username is required"})
+		c.SetCodeAndUnencryptedJSON(MyGinContext.CodeAndUnencryptedJSON{
+			Code:            http.StatusBadRequest,
+			UnencryptedJSON: gin.H{"error": "Username is required"},
+		})
 		return
 	}
-	note, result := logical.Search(username)
+	note, result := Logical.Search(username)
 	if !result {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "no search"})
+		c.SetCodeAndUnencryptedJSON(MyGinContext.CodeAndUnencryptedJSON{
+			Code:            http.StatusInternalServerError,
+			UnencryptedJSON: gin.H{"error": "no search"},
+		})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"note": note})
+	c.SetCodeAndUnencryptedJSON(MyGinContext.CodeAndUnencryptedJSON{
+		Code:            http.StatusOK,
+		UnencryptedJSON: gin.H{"note": note},
+	})
 }

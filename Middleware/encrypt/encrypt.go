@@ -1,9 +1,14 @@
 package encrypt
 
-import "github.com/gin-gonic/gin"
+import (
+	MyGinContext "github.com/JuTemp/mongodb-test/util/myGinContext"
+	"github.com/gin-gonic/gin"
+)
 
-var Encrypt = func(c *gin.Context) {
-	c.Next()
+var Encrypt = func(ctx *gin.Context) {
+	ctx.Next()
 
-	// TODO: not implement
+	cau := MyGinContext.MyGinContext{Context: ctx}.GetCodeAndUnencryptedJSON()
+
+	ctx.JSON(cau.Code, gin.H{"inner": cau.UnencryptedJSON})
 }
